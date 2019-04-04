@@ -9,8 +9,15 @@ const getOptionsQuery = (optionsObject = {}) =>
     .map(k => `${k}=${encodeURIComponent(optionsObject[k])}`)
     .join('&');
 
-const relatedResourceUrl = ({ parent, relationship }) =>
-  `${parent.type}/${parent.id}/${relationship}`;
+const relatedResourceUrl = ({ parent, relationship }) => {
+  if (
+    parent.relationships &&
+    Object.keys(parent.relationships).includes(relationship)
+  ) {
+    return parent.relationships[relationship].links.related;
+  }
+  return `${parent.type}/${parent.id}/${relationship}`;
+};
 
 const extractData = response => response.data;
 
